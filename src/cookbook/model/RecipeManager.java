@@ -52,16 +52,16 @@ public class RecipeManager {
     public List<Recipe> getChosenRecipes() {
         List<Recipe> chosen = new ArrayList<Recipe>();
         for (Recipe x : recipes) {
-            if (x.isChosen()) {
+            if (x.isChoosen()) {
                 chosen.add(x);
             }
         }
         return chosen;
     }
 
-    public boolean deleteFromChosen(String name) {
+    public boolean deleteFromChoosen(String name) {
         if (this.getRecipeByName(name) != null) {
-            this.getRecipeByName(name).setChosen(false);
+            this.getRecipeByName(name).setChoosen(false);
             return true;
         }
         return false;

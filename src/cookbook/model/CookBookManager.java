@@ -28,7 +28,7 @@ public class CookBookManager {
     }
 
     public List<Recipe> getRecipesByIngredient(String name) {
-        recipeManager.getRecipesByIngredient(name);
+        return recipeManager.getRecipesByIngredient(name);
     }
 
     public List<Category> getAllCategory() {

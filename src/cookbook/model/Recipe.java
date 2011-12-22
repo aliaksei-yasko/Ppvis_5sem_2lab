@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package cookbook.model;
 
 import java.util.ArrayList;
@@ -13,28 +12,28 @@ import java.util.List;
  * @author Admin
  */
 public class Recipe {
+
     private String name = "";
     private String description = "";
     private int number = -1;
     private List<Ingredient> ingridients = new ArrayList<Ingredient>();
     private List<Advice> advices = new ArrayList<Advice>();
-    private boolean chosen = false;
+    private boolean choosen = false;
     private Category category = null;
 
     public Recipe() {
-
     }
 
-    public boolean isChosen() {
-        return chosen;
+    public boolean isChoosen() {
+        return choosen;
     }
 
-    public void setChosen(boolean chosen) {
-        this.chosen = chosen;
+    public void setChoosen(boolean chosen) {
+        this.choosen = chosen;
     }
 
-    boolean isContainsName(String str){
-        if (name.indexOf(str) == -1){
+    boolean isContainsName(String str) {
+        if (name.indexOf(str) == -1) {
             return false;
         } else {
             return true;
@@ -99,4 +98,3 @@ public class Recipe {
         this.number = number;
     }
 }
-
