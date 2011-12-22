@@ -5,6 +5,8 @@
 package cookbook.ui;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -16,25 +18,28 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-public class NewDialog extends JDialog {
+public class AddRecipeDialog extends JDialog {
 
     private JTextField name;
     private JTextArea descr;
     private boolean ok = false;
     private JButton okButton;
+    private JButton cancelButton;
 
-    public NewDialog(JFrame owner) {
-        super(owner, "New function", true);
-        this.setSize(300, 600);
+    public AddRecipeDialog(JFrame owner) {
+        super(owner, "New recipe", true);
+        this.setSize(300, 300);
         this.setLocation(125, 125);
-        
+
         name = new JTextField();
-        descr = new JTextArea(10, 50);
+        descr = new JTextArea(10, 20);
 
         JScrollPane descrScroll = new JScrollPane(descr);
 
         okButton = new JButton("Ok");
-        JButton cancelButton = new JButton("Cancel");
+        cancelButton = new JButton("Cancel");
+        okButton.addActionListener(new ButtonHandler());
+        cancelButton.addActionListener(new ButtonHandler());
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(okButton);
         buttonPanel.add(cancelButton);
@@ -42,7 +47,7 @@ public class NewDialog extends JDialog {
         Box vBox = Box.createVerticalBox();
 
         JPanel panLabel1 = new JPanel();
-        panLabel1.add(new JLabel("Receipe name:"));
+        panLabel1.add(new JLabel("Recipe name:"));
         vBox.add(panLabel1);
         vBox.add(name);
         vBox.add(Box.createVerticalStrut(10));
@@ -51,7 +56,7 @@ public class NewDialog extends JDialog {
         vBox.add(panLabel3);
         vBox.add(descrScroll);
         vBox.add(Box.createVerticalStrut(10));
-        
+
 
         this.add(vBox, BorderLayout.CENTER);
         this.add(buttonPanel, BorderLayout.SOUTH);
@@ -62,5 +67,30 @@ public class NewDialog extends JDialog {
 
     public boolean getOk() {
         return ok;
+    }
+
+    public String getDescr() {
+        return name.getText();
+    }
+
+    public String getName() {
+        return name.getText();
+    }
+
+    private class ButtonHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JButton clickedButton = (JButton) e.getSource();
+
+            if (clickedButton.getText().equals("Cancel")) {
+                setVisible(false);
+                return;
+            } else {
+                ok = true;
+                setVisible(false);
+                return;
+            }
+        }
     }
 }

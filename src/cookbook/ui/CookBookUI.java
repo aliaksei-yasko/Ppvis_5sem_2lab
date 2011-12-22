@@ -10,6 +10,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.Box;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -24,21 +27,18 @@ public class CookBookUI extends JFrame {
     private JXLabel viewer;
     private JFrame thisFrame;
     private CookBookManager manager;
+    private JMenu recipeMenu;
 
     public CookBookUI() {
         thisFrame = this;
 
         manager = new CookBookManager();
-        
+
         this.createCommonTable();
         this.initComponent();
         this.setSize(700, 500);
         this.setLocation(100, 100);
         this.setTitle("Cook Book");
-
-        for (Recipe current : manager.getAllRecipes()) {
-            System.out.println(current.getName());
-        }
     }
 
     private void initComponent() {
@@ -46,6 +46,21 @@ public class CookBookUI extends JFrame {
         viewer = new JXLabel("", SwingConstants.LEFT);
         viewer.setVerticalAlignment(SwingConstants.TOP);
         viewer.setLineWrap(true);
+
+        JMenuBar menuBar = new JMenuBar();
+        this.setJMenuBar(menuBar);
+
+        recipeMenu = new JMenu("Recipe");
+        menuBar.add(recipeMenu);
+        JMenuItem addRecipeMenuItem = new JMenuItem("Add recipe");
+        addRecipeMenuItem.addActionListener(new AddRecipeMenuItemHandler());
+        recipeMenu.add(addRecipeMenuItem);
+        JMenuItem deleteRecipeMenuItem = new JMenuItem("Delete recipe");
+//        addIncidentMenuItem.addActionListener(new AddIncidentMenuItemHandler());
+        recipeMenu.add(deleteRecipeMenuItem);
+        JMenuItem updateRecipeMenuItem = new JMenuItem("Update recipe");
+//        addIncidentMenuItem.addActionListener(new AddIncidentMenuItemHandler());
+        recipeMenu.add(updateRecipeMenuItem);
 
         JScrollPane scrollPaneTable = new JScrollPane(resultTable);
         scrollPaneTable.setPreferredSize(new Dimension(150, 500));
@@ -90,6 +105,20 @@ public class CookBookUI extends JFrame {
     }
 
     private void displayTable() {
+        if (manager.getAllRecipes() == null) {
+            return;
+        }
+
+        while (resultTabelModel.getRowCount() > 0) {
+            resultTabelModel.removeRow(0);
+        }
+        String[] mas = new String[2];
+        for (Recipe recipe : manager.getAllRecipes()) {
+            mas[0] = Integer.toString(recipe.getNumber());
+            mas[1] = recipe.getName();
+            resultTabelModel.addRow(mas);
+        }
+
     }
 
     private class ViewAllActionHandler implements ActionListener {
@@ -106,11 +135,11 @@ public class CookBookUI extends JFrame {
         }
     }
 
-    private class NewActionHandler implements ActionListener {
+    private class AddRecipeMenuItemHandler implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            NewDialog dialog = new NewDialog(thisFrame);
+            AddRecipeDialog dialog = new AddRecipeDialog(thisFrame);
 
             dialog.setVisible(true);
 
@@ -132,7 +161,7 @@ public class CookBookUI extends JFrame {
                 return;
             }
 
-            NewDialog dialog = new NewDialog(thisFrame);
+            AddRecipeDialog dialog = new AddRecipeDialog(thisFrame);
             dialog.setVisible(true);
 
             if (!dialog.getOk()) {

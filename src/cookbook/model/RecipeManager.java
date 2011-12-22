@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class RecipeManager {
 
-    private List<Recipe> recipes = new ArrayList<Recipe>();
+    private List<Recipe> recipes = null;
 
     public RecipeManager() {
     }
