@@ -13,13 +13,13 @@ import java.util.List;
  * @author Admin
  */
 public class Recipe {
-    String name = "";
-    String description = "";
-    int number = -1;
-    List<Ingredient> ingridients = new ArrayList<Ingredient>();
-    List<Advice> advices = new ArrayList<Advice>();
-    boolean chosen = false;
-    Category category = null;
+    private String name = "";
+    private String description = "";
+    private int number = -1;
+    private List<Ingredient> ingridients = new ArrayList<Ingredient>();
+    private List<Advice> advices = new ArrayList<Advice>();
+    private boolean chosen = false;
+    private Category category = null;
 
     public Recipe() {
 

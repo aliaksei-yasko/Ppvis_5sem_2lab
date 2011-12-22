@@ -13,7 +13,7 @@ import java.util.List;
  * @author Admin
  */
 public class CategoryManager {
-    List<Category> categores = new ArrayList<Category>();
+    private List<Category> categores = new ArrayList<Category>();
 
     public CategoryManager() {
 

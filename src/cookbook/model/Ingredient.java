@@ -10,9 +10,9 @@ package cookbook.model;
  * @author Admin
  */
 public class Ingredient {
-    String name = "";
-    String quantity = "";
-    String dimension = "";;
+    private String name = "";
+    private String quantity = "";
+    private String dimension = "";;
 
     public Ingredient() {
 

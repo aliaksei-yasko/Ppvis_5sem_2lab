@@ -1,5 +1,6 @@
 package cookbook.ui;
 
+import cookbook.model.CookBookManager;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -21,9 +22,13 @@ public class CookBookUI extends JFrame {
     private DefaultTableModel resultTabelModel;
     private JXLabel viewer;
     private JFrame thisFrame;
+    private CookBookManager manager;
 
     public CookBookUI() {
         thisFrame = this;
+
+        manager = new CookBookManager();
+        
         this.createCommonTable();
         this.initComponent();
         this.setSize(700, 500);

@@ -10,7 +10,7 @@ package cookbook.model;
  * @author Admin
  */
 public class Category {
-    String name = "";
+    private String name = "";
 
     public Category() {
 
