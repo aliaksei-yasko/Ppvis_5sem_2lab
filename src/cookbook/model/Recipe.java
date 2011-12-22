@@ -19,9 +19,18 @@ public class Recipe {
     List<Ingredient> ingridients = new ArrayList<Ingredient>();
     List<Advice> advices = new ArrayList<Advice>();
     boolean chosen = false;
+    Category category = null;
 
     public Recipe() {
 
+    }
+
+    public boolean isChosen() {
+        return chosen;
+    }
+
+    public void setChosen(boolean chosen) {
+        this.chosen = chosen;
     }
 
     boolean isContainsName(String str){
@@ -58,6 +67,14 @@ public class Recipe {
         this.ingridients.add(ingridient);
     }
 
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -81,7 +98,5 @@ public class Recipe {
     public void setNumber(int number) {
         this.number = number;
     }
-
-
 }
 
