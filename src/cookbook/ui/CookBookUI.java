@@ -42,7 +42,6 @@ public class CookBookUI extends JFrame {
     }
 
     private void initComponent() {
-
         viewer = new JXLabel("", SwingConstants.LEFT);
         viewer.setVerticalAlignment(SwingConstants.TOP);
         viewer.setLineWrap(true);
@@ -82,6 +81,8 @@ public class CookBookUI extends JFrame {
         this.add(mainBox, BorderLayout.WEST);
 
         thisFrame.setResizable(false);
+
+        this.displayTable();
     }
 
     private void createCommonTable() {
