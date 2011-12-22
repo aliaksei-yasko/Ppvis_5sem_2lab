@@ -4,6 +4,7 @@
  */
 package cookbook.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,16 +22,48 @@ public class RecipeManager {
         return recipes.add(recipe);
     }
 
-    public boolean deleteRecipe(Recipe recipe) {
-        return recipes.remove(recipe);
+    public boolean deleteRecipe(String name) {
+        return recipes.remove(this.getRecipeByName(name));
+    }
+
+    public List<Recipe> getAllRecipes() {
+        return recipes;
     }
 
     public Recipe getRecipeByName(String name) {
         for (Recipe x : recipes) {
-            if (x.getName() == name) {
+            if (x.getName().equals(name)) {
                 return x;
             }
         }
         return null;
+    }
+
+    public List<Recipe> getRecipesByIngredient(String ingredient) {
+        List<Recipe> matched = new ArrayList<Recipe>();
+        for (Recipe x : recipes) {
+            if (x.isContainsIngridient(ingredient)) {
+                matched.add(x);
+            }
+        }
+        return matched;
+    }
+
+    public List<Recipe> getChosenRecipes() {
+        List<Recipe> chosen = new ArrayList<Recipe>();
+        for (Recipe x : recipes) {
+            if (x.isChosen()) {
+                chosen.add(x);
+            }
+        }
+        return chosen;
+    }
+
+    public boolean deleteFromChosen(String name) {
+        if (this.getRecipeByName(name) != null) {
+            this.getRecipeByName(name).setChosen(false);
+            return true;
+        }
+        return false;
     }
 }
