@@ -1,6 +1,7 @@
 package cookbook.ui;
 
 import cookbook.model.CookBookManager;
+import cookbook.model.Recipe;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -34,6 +35,10 @@ public class CookBookUI extends JFrame {
         this.setSize(700, 500);
         this.setLocation(100, 100);
         this.setTitle("Cook Book");
+
+        for (Recipe current : manager.getAllRecipes()) {
+            System.out.println(current.getName());
+        }
     }
 
     private void initComponent() {
