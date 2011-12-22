@@ -154,6 +154,7 @@ public class CookBookUI extends JFrame {
             recipe.setName(dialog.getName());
             recipe.setDescription(dialog.getDescr());
             manager.addNewRecipe(recipe);
+            displayTable();
         }
     }
 
@@ -224,7 +225,7 @@ public class CookBookUI extends JFrame {
             str.append("</font>"
                     + "<h3>CATEGORY:</h3>"
                     + "<font size=\"4\" face=\"Comic Sans MS\">"
-                    + recipe.getCategory() + "</font>"
+                    + recipe.getCategory().getName() + "</font>"
                     + "<h3>ADVICES:</h3>"
                     + "<font size=\"4\" face=\"Comic Sans MS\">");
 
@@ -233,7 +234,7 @@ public class CookBookUI extends JFrame {
             }
 
             str.append("</font></html>");
-
+            viewer.setText(str.toString());
         }
 
         @Override
