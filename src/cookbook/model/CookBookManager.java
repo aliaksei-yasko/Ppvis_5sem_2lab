@@ -2,40 +2,92 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package cookbook.model;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
-
 
 /**
  *
  * @author Admin
  */
 public class CookBookManager {
+
     private CategoryManager categoryManager = new CategoryManager();
     private RecipeManager recipeManager = new RecipeManager();
 
     public CookBookManager() {
-        List<Recipe> recipes = SelectFromDataBase.SelectAllRecipe();
-        if (recipes != null) {
-            for (Recipe current : recipes) {
-                recipeManager.addRecipe(current);
-            }
-        }
+        try {
+            Connection connection = this.getConnection();
+            Statement statement = connection.createStatement();
 
-        List<Category> categorys = SelectFromDataBase.SelectAllCategory();
-        if (categorys != null) {
-            for (Category current : categorys) {
-                categoryManager.addCategory(current);
+            String sql = "select * from recipe";
+            ResultSet resultRecipes = statement.executeQuery(sql);
+
+            while (resultRecipes.next()) {
+                Recipe recipe = new Recipe();
+                recipe.setName(resultRecipes.getString("recipe"));
+                recipe.setNumber(resultRecipes.getInt("id_recipe"));
+                recipe.setDescription(resultRecipes.getString("text"));
+
+                String sqlAdvice = "select * from advice where id_recipe = ?";
+                PreparedStatement pStateAdvice = connection.prepareStatement(sqlAdvice);
+                pStateAdvice.setInt(1, recipe.getNumber());
+                ResultSet resultAdvice = pStateAdvice.executeQuery();
+
+                while (resultAdvice.next()) {
+                    Advice advice = new Advice();
+                    advice.setDescription(resultAdvice.getString("advice"));
+                    recipe.addAdvice(advice);
+                }
+
+                String sqlIngredient = "select * from ingredient where id_recipe = ?";
+                PreparedStatement pStateIngredient = connection.prepareStatement(sqlIngredient);
+                pStateIngredient.setInt(1, recipe.getNumber());
+                ResultSet resultIngredient = pStateIngredient.executeQuery();
+
+                while (resultIngredient.next()) {
+                    Ingredient ingredient = new Ingredient();
+                    ingredient.setName(resultIngredient.getString("ingredient"));
+                    ingredient.setDimension(resultIngredient.getString("dimension"));
+                    ingredient.setQuantity(resultIngredient.getString("quantity"));
+                    recipe.addIngridient(ingredient);
+                }
+
+                String sqlCategory = "select * from category where id_recipe = ?";
+                PreparedStatement pStateCategory = connection.prepareStatement(sqlCategory);
+                pStateCategory.setInt(1, recipe.getNumber());
+                ResultSet resultCategory = pStateCategory.executeQuery();
+
+                if (resultCategory.next()) {
+                    Category category = new Category();
+                    category.setName(resultCategory.getString("category"));
+                    recipe.setCategory(category);
+                }
+
+                recipeManager.addRecipe(recipe);
             }
+
+            String sqlCat = "select * from category";
+            Statement statCat = connection.createStatement();
+            ResultSet resultCat = statCat.executeQuery(sqlCat);
+
+            while (resultCat.next()) {
+                Category category = new Category();
+                category.setName(resultCat.getString("category"));
+                categoryManager.addCategory(category);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
 
-    public Connection getConnection() throws SQLException{
+    public Connection getConnection() throws SQLException {
         String username = "alex";
         String password = "alex";
         String url = "jdbc:derby://localhost:1527/CookBook";
@@ -43,18 +95,7 @@ public class CookBookManager {
         return DriverManager.getConnection(url, username, password);
     }
 
-    public int getMaxId() {
-        int id = -1;
-        for (Recipe current : recipeManager.getAllRecipes()) {
-            if (id < current.getNumber()) {
-                id = current.getNumber();
-            }
-        }
-
-        return id;
-    }
-
-    public void addNewCategory(Category category){
+    public void addNewCategory(Category category) {
         categoryManager.addCategory(category);
     }
 
@@ -62,12 +103,12 @@ public class CookBookManager {
         recipeManager.addRecipe(recipe);
     }
 
-    public Recipe getRecipeByName(String name) {
-        return recipeManager.getRecipeByName(name);
-    }
-
     public List<Recipe> getRecipesByIngredient(String name) {
         return recipeManager.getRecipesByIngredient(name);
+    }
+
+    public Recipe getRecipeByName(String name) {
+        return recipeManager.getRecipeByName(name);
     }
 
     public List<Category> getAllCategory() {
@@ -91,6 +132,5 @@ public class CookBookManager {
     }
 
     public void getAllChoosenRecipe() {
-
     }
 }

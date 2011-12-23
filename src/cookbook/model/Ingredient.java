@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package cookbook.model;
 
 /**
@@ -10,12 +9,18 @@ package cookbook.model;
  * @author Admin
  */
 public class Ingredient {
+
     private String name = "";
     private String quantity = "";
-    private String dimension = "";;
+    private String dimension = "";
 
     public Ingredient() {
+    }
 
+    public Ingredient(String name, String quantity, String dimension) {
+        this.name = name;
+        this.quantity = quantity;
+        this.dimension = dimension;
     }
 
     public String getDimension() {
