@@ -34,6 +34,7 @@ public class CookBookUI extends JFrame {
     private JFrame thisFrame;
     private CookBookManager manager;
     private JMenu recipeMenu;
+    private JMenu searchMenu;
     private JComboBox category;
 
     public CookBookUI() {
@@ -78,6 +79,15 @@ public class CookBookUI extends JFrame {
         updateRecipeMenuItem.addActionListener(new UpdateRecipeMenuItemHandler());
         recipeMenu.add(updateRecipeMenuItem);
 
+        searchMenu = new JMenu("Search");
+        menuBar.add(searchMenu);
+        JMenuItem searchByNameMenuItem = new JMenuItem("Search by name");
+        searchMenu.add(searchByNameMenuItem);
+        searchByNameMenuItem.addActionListener(new SearchByStrMenuItemHandler());
+        JMenuItem searchByIngridientMenuItem = new JMenuItem("Search by ingridient");
+        searchMenu.add(searchByIngridientMenuItem);
+        searchByIngridientMenuItem.addActionListener(new SearchByCategoryMenuItemHandler());
+        
         JScrollPane scrollPaneTable = new JScrollPane(resultTable);
         scrollPaneTable.setPreferredSize(new Dimension(320, 600));
         scrollPaneTable.setMaximumSize(new Dimension(320, 600));
@@ -312,6 +322,17 @@ public class CookBookUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             String name = JOptionPane.showInputDialog("Input piece of name:");
             List<Recipe> list = manager.selectByStr(name);
+            displayTable(list);
+        }
+
+    }
+
+    private class SearchByCategoryMenuItemHandler implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String name = JOptionPane.showInputDialog("Input including ingridient:");
+            List<Recipe> list = manager.getRecipesByIngredient(name);
             displayTable(list);
         }
 

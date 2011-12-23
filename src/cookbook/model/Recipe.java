@@ -43,7 +43,7 @@ public class Recipe {
     boolean isContainsIngridient(String name) {
 
         for (Ingredient current : ingridients) {
-            if (current.getName().equals(name)) {
+            if (current.getName().indexOf(name) != -1) {
                 return true;
             }
         }
