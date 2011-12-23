@@ -55,6 +55,9 @@ public class Recipe {
     }
 
     public void addAdvice(Advice advice) {
+         if (advice == null) {
+            return;
+        }
         this.advices.add(advice);
     }
 
@@ -63,6 +66,9 @@ public class Recipe {
     }
 
     public void addIngridient(Ingredient ingridient) {
+         if (ingridient == null) {
+            return;
+        }
         this.ingridients.add(ingridient);
     }
 
@@ -71,6 +77,9 @@ public class Recipe {
     }
 
     public void setCategory(Category category) {
+         if (category == null) {
+            return;
+        }
         this.category = category;
     }
 
@@ -79,6 +88,9 @@ public class Recipe {
     }
 
     public void setDescription(String description) {
+         if (description == null) {
+            return;
+        }
         this.description = description;
     }
 
@@ -87,6 +99,9 @@ public class Recipe {
     }
 
     public void setName(String name) {
+        if (name == null) {
+            return;
+        }
         this.name = name;
     }
 

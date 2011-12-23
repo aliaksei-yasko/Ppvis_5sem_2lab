@@ -85,8 +85,8 @@ public class CookBookManager {
         return recipeManager.deleteFromChoosen(name);
     }
 
-    public void getAllChoosenRecipe() {
-
+    public List<Recipe> getAllChoosenRecipe() {
+        return recipeManager.getChosenRecipes();
     }
 
     public List<Recipe> selectByStr(String name) {

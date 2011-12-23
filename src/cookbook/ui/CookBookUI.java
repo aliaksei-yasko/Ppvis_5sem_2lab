@@ -60,6 +60,7 @@ public class CookBookUI extends JFrame {
 
         List<String> cat = new ArrayList<String>();
         cat.add("All");
+        cat.add("Choosen");
         for (Category x : manager.getAllCategory()) {
             cat.add(x.getName());
         }
@@ -78,6 +79,9 @@ public class CookBookUI extends JFrame {
         JMenuItem updateRecipeMenuItem = new JMenuItem("Update recipe");
         updateRecipeMenuItem.addActionListener(new UpdateRecipeMenuItemHandler());
         recipeMenu.add(updateRecipeMenuItem);
+        JMenuItem addToChoosenMenuItem = new JMenuItem("Добавить в избранное");
+        recipeMenu.add(addToChoosenMenuItem);
+        addToChoosenMenuItem.addActionListener(new AddToChoosenMenuItemHandler());
 
         searchMenu = new JMenu("Search");
         menuBar.add(searchMenu);
@@ -104,13 +108,16 @@ public class CookBookUI extends JFrame {
         tableTextBox.add(scrollPaneText);
 
         Box comboBox = Box.createHorizontalBox();
-        comboBox.add(category, BorderLayout.WEST);
+        comboBox.add(category, BorderLayout.SOUTH);
 
         comboBox.setPreferredSize(new Dimension(300, 20));
         comboBox.setMaximumSize(new Dimension(300, 20));
-
-        mainBox.add(tableTextBox);
+        mainBox.add(Box.createVerticalStrut(10));
         mainBox.add(comboBox);
+        
+        mainBox.add(Box.createVerticalStrut(10));
+        mainBox.add(tableTextBox);
+        
 
         this.add(mainBox, BorderLayout.WEST);
 
@@ -166,8 +173,13 @@ public class CookBookUI extends JFrame {
         public void actionPerformed(ActionEvent event) {
             if (category.getSelectedItem().toString().equals("All")) {
                 displayTable(manager.getAllRecipes());
+                return;
+            } if (category.getSelectedItem().toString().equals("Choosen")){
+                displayTable(manager.getAllChoosenRecipe());
+                return;
             } else {
                 displayTable(manager.selectByCategory(category.getSelectedItem().toString()));
+                return;
             }
         }
     }
@@ -182,7 +194,11 @@ public class CookBookUI extends JFrame {
                 return;
             }
             manager.deleteRecipe(resultTable.getValueAt(resultTable.getSelectedRow(), 1).toString());
-            displayTable(manager.selectByCategory(category.getSelectedItem().toString()));
+            if (category.getSelectedItem().toString().equals("All")) {
+                displayTable(manager.getAllRecipes());
+            } else {
+                displayTable(manager.selectByCategory(category.getSelectedItem().toString()));
+            }
         }
     }
 
@@ -199,13 +215,18 @@ public class CookBookUI extends JFrame {
             }
 
             Recipe recipe = new Recipe();
+            recipe.setNumber(manager.getMaxId() + 1);
             recipe.setName(dialog.getRecipeName());
             recipe.setDescription(dialog.getDescr());
             recipe.setCategory(new Category(dialog.getCategory()));
 
             for (String x : dialog.getIngr()) {
                 String[] y = x.split(" ");
-                recipe.addIngridient(new Ingredient(y[0], y[1], y[2]));
+                if (y.length < 3) {
+                    continue;
+                } else {
+                    recipe.addIngridient(new Ingredient(y[0], y[1], y[2]));
+                }
             }
 
             for (String x : dialog.getAdv()) {
@@ -213,7 +234,11 @@ public class CookBookUI extends JFrame {
             }
 
             manager.addNewRecipe(recipe);
-            displayTable(manager.selectByCategory(category.getSelectedItem().toString()));
+            if (category.getSelectedItem().toString().equals("All")) {
+                displayTable(manager.getAllRecipes());
+            } else {
+                displayTable(manager.selectByCategory(category.getSelectedItem().toString()));
+            }
         }
     }
 
@@ -250,7 +275,11 @@ public class CookBookUI extends JFrame {
                 recipe.addAdvice(new Advice(x));
             }
 
-            displayTable(manager.selectByCategory(category.getSelectedItem().toString()));
+            if (category.getSelectedItem().toString().equals("All")) {
+                displayTable(manager.getAllRecipes());
+            } else {
+                displayTable(manager.selectByCategory(category.getSelectedItem().toString()));
+            }
         }
     }
 
@@ -334,6 +363,24 @@ public class CookBookUI extends JFrame {
             String name = JOptionPane.showInputDialog("Input including ingridient:");
             List<Recipe> list = manager.getRecipesByIngredient(name);
             displayTable(list);
+        }
+
+    }
+
+    private class AddToChoosenMenuItemHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int selectedRow = resultTable.getSelectedRow();
+
+            if (selectedRow == -1) {
+                return;
+            }
+
+            String selectedName = resultTable.getValueAt(selectedRow, 1).toString();
+            Recipe recipe;
+            recipe = manager.getRecipeByName(selectedName);
+            recipe.setChoosen(true);
         }
 
     }

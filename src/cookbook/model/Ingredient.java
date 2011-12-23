@@ -28,6 +28,9 @@ public class Ingredient {
     }
 
     public void setDimension(String dimension) {
+         if (dimension == null) {
+            return;
+        }
         this.dimension = dimension;
     }
 
@@ -36,6 +39,9 @@ public class Ingredient {
     }
 
     public void setName(String name) {
+         if (name == null) {
+            return;
+        }
         this.name = name;
     }
 
@@ -44,6 +50,9 @@ public class Ingredient {
     }
 
     public void setQuantity(String quantity) {
+         if (quantity == null) {
+            return;
+        }
         this.quantity = quantity;
     }
 }
