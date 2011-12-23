@@ -1,6 +1,8 @@
 package cookbook.ui;
 
+import cookbook.model.Advice;
 import cookbook.model.CookBookManager;
+import cookbook.model.Ingredient;
 import cookbook.model.Recipe;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -145,9 +147,13 @@ public class CookBookUI extends JFrame {
             dialog.setVisible(true);
 
             if (!dialog.getOk()) {
-
                 return;
             }
+
+            Recipe recipe = new Recipe();
+            recipe.setName(dialog.getName());
+            recipe.setDescription(dialog.getDescr());
+            manager.addNewRecipe(recipe);
         }
     }
 
@@ -195,25 +201,38 @@ public class CookBookUI extends JFrame {
                 return;
             }
 
-            String selectedName = resultTable.getValueAt(selectedRow, 0).toString();
+            String selectedName = resultTable.getValueAt(selectedRow, 1).toString();
+            Recipe recipe;
+            recipe = manager.getRecipeByName(selectedName);
 
-//            viewer.setText("<html>"
-//                    + "<h3>FUNCTION:</h3>"
-//                    + "<font color=\"red\" size=\"5\" face=\"Comic Sans MS\">"
-//                    + selectedFunc + "</font><p>"
-//                    + "<h3>DESCRIPTION:</h3>"
-//                    + "<font size=\"4\" face=\"Comic Sans MS\">"
-//                    + selectedDescr + "</font><p>"
-//                    + "<h3>DECLARATION:</h3>"
-//                    + "<font size=\"4\" face=\"Comic Sans MS\">"
-//                    + selectedDeclar + "</font><p>"
-//                    + "<h3>OBSERVATIONS:</h3>"
-//                    +"<font size=\"4\" face=\"Comic Sans MS\">"
-//                    + selectedObserv + "</font><p>"
-//                    + "<h3>EXAMPLE:</h3>"
-//                    + "<font size=\"4\" face=\"Verdana\"> "
-//                    + compil
-//                    + "</font></html>");
+            StringBuilder str = new StringBuilder();
+            str.append("<html>"
+                    + "<h3>NAME:</h3>"
+                    + "<font color=\"red\" size=\"5\" face=\"Comic Sans MS\">"
+                    + recipe.getName() + "</font><p>"
+                    + "<h3>DESCRIPTION:</h3>"
+                    + "<font size=\"4\" face=\"Comic Sans MS\">"
+                    + recipe.getDescription() + "</font>"
+                    + "<h3>INGREDIENTS:</h3>"
+                    + "<font size=\"4\" face=\"Comic Sans MS\">");
+
+            for (Ingredient ingr : recipe.getIngridients()) {
+                str.append(ingr.getName() + " " + ingr.getQuantity() + ""
+                        + ingr.getDimension() + "<p>");
+            }
+
+            str.append("</font>"
+                    + "<h3>CATEGORY:</h3>"
+                    + "<font size=\"4\" face=\"Comic Sans MS\">"
+                    + recipe.getCategory() + "</font>"
+                    + "<h3>ADVICES:</h3>"
+                    + "<font size=\"4\" face=\"Comic Sans MS\">");
+
+            for (Advice adv : recipe.getAdvices()) {
+                str.append(adv.getDescription() + "<p>");
+            }
+
+            str.append("</font></html>");
 
         }
 

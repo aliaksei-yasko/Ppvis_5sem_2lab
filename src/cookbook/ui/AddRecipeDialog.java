@@ -74,7 +74,7 @@ public class AddRecipeDialog extends JDialog {
     }
 
     public String getName() {
-        return name.getText();
+        return descr.getText();
     }
 
     private class ButtonHandler implements ActionListener {
