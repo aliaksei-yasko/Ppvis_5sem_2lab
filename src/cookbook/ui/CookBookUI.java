@@ -294,7 +294,9 @@ public class CookBookUI extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            
+            String name = JOptionPane.showInputDialog("Input piece of name:");
+            List<Recipe> list = manager.selectByStr(name);
+            displayTable(list);
         }
 
     }
