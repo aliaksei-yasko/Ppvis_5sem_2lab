@@ -4,14 +4,9 @@
  */
 package cookbook.ui;
 
-import cookbook.model.CookBookManager;
-import cookbook.model.Category;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.String;
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -24,7 +19,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-public class AddRecipeDialog extends JDialog {
+public class UpdateRecipeDialog extends JDialog {
 
     private JTextField name;
     private JTextArea descr;
@@ -35,9 +30,9 @@ public class AddRecipeDialog extends JDialog {
     private JButton okButton;
     private JButton cancelButton;
 
-    public AddRecipeDialog(JFrame owner) {
+    public UpdateRecipeDialog(JFrame owner) {
         super(owner, "New recipe", true);
-        this.setSize(300, 600);
+        this.setSize(300, 300);
         this.setLocation(125, 125);
 
         name = new JTextField();
@@ -45,19 +40,11 @@ public class AddRecipeDialog extends JDialog {
         ingr = new JTextArea(10, 20);
         adv = new JTextArea(10, 20);
 
-        CookBookManager manager = new CookBookManager();
-
         JScrollPane descrScroll = new JScrollPane(descr);
         JScrollPane ingrScroll = new JScrollPane(ingr);
         JScrollPane advScroll = new JScrollPane(adv);
 
-        List<String> cat = new ArrayList<String>();
-        
-        for (Category x : manager.getAllCategory()) {
-            cat.add(x.getName());
-        }
-
-        category = new JComboBox(cat.toArray());
+        category = new JComboBox(new String[]{"Salads", "Soups", "Meat", "Garnishes"});
 
         okButton = new JButton("Ok");
         cancelButton = new JButton("Cancel");
@@ -82,16 +69,13 @@ public class AddRecipeDialog extends JDialog {
         vBox.add(Box.createVerticalStrut(10));
 
         JPanel panLabel3 = new JPanel();
-        panLabel3.add(new JLabel("Ingredients: (FORMAT: name quantity dimension[enter])"));
+        panLabel3.add(new JLabel("Ingredients: (FORMAT: name quantity dimension;)"));
         vBox.add(panLabel3);
         vBox.add(ingrScroll);
         vBox.add(Box.createVerticalStrut(10));
 
-        vBox.add(category);
-        vBox.add(Box.createVerticalStrut(10));
-
         JPanel panLabel4 = new JPanel();
-        panLabel4.add(new JLabel("Advice: (FORMAT: advice[enter])"));
+        panLabel4.add(new JLabel("Description: (FORMAT: advice;)"));
         vBox.add(panLabel4);
         vBox.add(advScroll);
         vBox.add(Box.createVerticalStrut(10));
@@ -120,11 +104,11 @@ public class AddRecipeDialog extends JDialog {
     }
 
     public String[] getIngr() {
-        return ingr.getText().split("\n");
+        return ingr.getText().split("; ");
     }
 
     public String[] getAdv() {
-        return adv.getText().split("\n");
+        return adv.getText().split("; ");
     }
 
     private class ButtonHandler implements ActionListener {

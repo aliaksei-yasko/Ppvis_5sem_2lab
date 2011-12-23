@@ -11,7 +11,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.Box;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -32,6 +35,7 @@ public class CookBookUI extends JFrame {
     private CookBookManager manager;
     private JMenu recipeMenu;
     private JMenu searchMenu;
+    private JComboBox category;
 
     public CookBookUI() {
         thisFrame = this;
@@ -40,9 +44,10 @@ public class CookBookUI extends JFrame {
 
         this.createCommonTable();
         this.initComponent();
-        this.setSize(700, 500);
+        this.setSize(800, 600);
         this.setLocation(100, 100);
         this.setTitle("Cook Book");
+
     }
 
     private void initComponent() {
@@ -52,6 +57,13 @@ public class CookBookUI extends JFrame {
 
         JMenuBar menuBar = new JMenuBar();
         this.setJMenuBar(menuBar);
+
+        List<String> cat = new ArrayList<String>();
+        for (Category x : manager.getAllCategory()) {
+            cat.add(x.getName());
+        }
+
+        category = new JComboBox(cat.toArray());
 
         recipeMenu = new JMenu("Recipe");
         menuBar.add(recipeMenu);
@@ -72,8 +84,8 @@ public class CookBookUI extends JFrame {
         searchByStr.addActionListener(new SearchByStrMenuItemHandler());
 
         JScrollPane scrollPaneTable = new JScrollPane(resultTable);
-        scrollPaneTable.setPreferredSize(new Dimension(150, 500));
-        scrollPaneTable.setMaximumSize(new Dimension(150, 500));
+        scrollPaneTable.setPreferredSize(new Dimension(320, 600));
+        scrollPaneTable.setMaximumSize(new Dimension(320, 600));
 
         JScrollPane scrollPaneText = new JScrollPane(viewer);
 
@@ -81,12 +93,19 @@ public class CookBookUI extends JFrame {
         Box tableTextBox = Box.createHorizontalBox();
 
         tableTextBox.add(scrollPaneTable);
-        tableTextBox.setPreferredSize(new Dimension(690, 500));
+        tableTextBox.setPreferredSize(new Dimension(790, 600));
 
         tableTextBox.add(Box.createHorizontalStrut(3));
         tableTextBox.add(scrollPaneText);
 
+        Box comboBox = Box.createHorizontalBox();
+        comboBox.add(category, BorderLayout.WEST);
+
+        comboBox.setPreferredSize(new Dimension(300, 20));
+        comboBox.setMaximumSize(new Dimension(300, 20));
+
         mainBox.add(tableTextBox);
+        mainBox.add(comboBox);
 
         this.add(mainBox, BorderLayout.WEST);
 
@@ -97,7 +116,7 @@ public class CookBookUI extends JFrame {
 
     private void createCommonTable() {
         String[] columnNames = new String[]{
-            "Number",
+            "№",
             "Name"
         };
 
@@ -113,6 +132,10 @@ public class CookBookUI extends JFrame {
         resultTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         resultTable.setAutoCreateRowSorter(true);
         resultTable.addMouseListener(new TableClicked());
+        resultTable.getColumnModel().getColumn(0).setMinWidth(25);
+        resultTable.getColumnModel().getColumn(0).setPreferredWidth(25);
+        resultTable.getColumnModel().getColumn(1).setMinWidth(292);
+        resultTable.getColumnModel().getColumn(1).setPreferredWidth(292);
     }
 
     private void displayTable() {
@@ -143,6 +166,11 @@ public class CookBookUI extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (resultTable.getSelectedRow() == -1) {
+                JOptionPane.showMessageDialog(null, "Select recipe please",
+                        "Selection", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             manager.deleteRecipe(resultTable.getValueAt(resultTable.getSelectedRow(), 1).toString());
             displayTable();
         }
@@ -161,7 +189,7 @@ public class CookBookUI extends JFrame {
             }
 
             Recipe recipe = new Recipe();
-            recipe.setName(dialog.getName());
+            recipe.setName(dialog.getRecipeName());
             recipe.setDescription(dialog.getDescr());
             recipe.setCategory(new Category(dialog.getCategory()));
 
@@ -173,7 +201,7 @@ public class CookBookUI extends JFrame {
             for (String x : dialog.getAdv()) {
                 recipe.addAdvice(new Advice(x));
             }
-            
+
             manager.addNewRecipe(recipe);
             displayTable();
         }
@@ -185,19 +213,18 @@ public class CookBookUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             int selectedRow = resultTable.getSelectedRow();
             if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(null, "Select function please",
+                JOptionPane.showMessageDialog(null, "Select recipe please",
                         "Selection", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            AddRecipeDialog dialog = new AddRecipeDialog(thisFrame);
+            UpdateRecipeDialog dialog = new UpdateRecipeDialog(thisFrame);
             dialog.setVisible(true);
 
             if (!dialog.getOk()) {
-                ViewAllActionHandler s = new ViewAllActionHandler();
-                s.actionPerformed(e);
                 return;
             }
+
         }
     }
 
