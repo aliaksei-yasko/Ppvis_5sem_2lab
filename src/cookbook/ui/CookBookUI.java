@@ -34,7 +34,6 @@ public class CookBookUI extends JFrame {
     private JFrame thisFrame;
     private CookBookManager manager;
     private JMenu recipeMenu;
-    private JMenu searchMenu;
     private JComboBox category;
 
     public CookBookUI() {
@@ -59,11 +58,13 @@ public class CookBookUI extends JFrame {
         this.setJMenuBar(menuBar);
 
         List<String> cat = new ArrayList<String>();
+        cat.add("All");
         for (Category x : manager.getAllCategory()) {
             cat.add(x.getName());
         }
 
         category = new JComboBox(cat.toArray());
+        category.addActionListener(new CategoryViewActionListener());
 
         recipeMenu = new JMenu("Recipe");
         menuBar.add(recipeMenu);
@@ -74,14 +75,8 @@ public class CookBookUI extends JFrame {
         deleteRecipeMenuItem.addActionListener(new DeleteRecipeMenuItemHandler());
         recipeMenu.add(deleteRecipeMenuItem);
         JMenuItem updateRecipeMenuItem = new JMenuItem("Update recipe");
-//        addIncidentMenuItem.addActionListener(new AddIncidentMenuItemHandler());
+        updateRecipeMenuItem.addActionListener(new UpdateRecipeMenuItemHandler());
         recipeMenu.add(updateRecipeMenuItem);
-
-        searchMenu = new JMenu("Search");
-        menuBar.add(searchMenu);
-        JMenuItem searchByStr = new JMenuItem("Search by name");
-        searchMenu.add(searchByStr);
-        searchByStr.addActionListener(new SearchByStrMenuItemHandler());
 
         JScrollPane scrollPaneTable = new JScrollPane(resultTable);
         scrollPaneTable.setPreferredSize(new Dimension(320, 600));
@@ -111,7 +106,7 @@ public class CookBookUI extends JFrame {
 
         thisFrame.setResizable(false);
 
-        this.displayTable();
+        this.displayTable(manager.getAllRecipes());
     }
 
     private void createCommonTable() {
@@ -138,7 +133,7 @@ public class CookBookUI extends JFrame {
         resultTable.getColumnModel().getColumn(1).setPreferredWidth(292);
     }
 
-    private void displayTable() {
+    private void displayTable(List<Recipe> toDisplay) {
         if (manager.getAllRecipes() == null) {
             return;
         }
@@ -147,7 +142,7 @@ public class CookBookUI extends JFrame {
             resultTabelModel.removeRow(0);
         }
         String[] mas = new String[2];
-        for (Recipe recipe : manager.getAllRecipes()) {
+        for (Recipe recipe : toDisplay) {
             mas[0] = Integer.toString(recipe.getNumber());
             mas[1] = recipe.getName();
             resultTabelModel.addRow(mas);
@@ -155,10 +150,15 @@ public class CookBookUI extends JFrame {
 
     }
 
-    private class ViewAllActionHandler implements ActionListener {
+    private class CategoryViewActionListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent event) {
+            if (category.getSelectedItem().toString().equals("All")) {
+                displayTable(manager.getAllRecipes());
+            } else {
+                displayTable(manager.selectByCategory(category.getSelectedItem().toString()));
+            }
         }
     }
 
@@ -172,7 +172,7 @@ public class CookBookUI extends JFrame {
                 return;
             }
             manager.deleteRecipe(resultTable.getValueAt(resultTable.getSelectedRow(), 1).toString());
-            displayTable();
+            displayTable(manager.selectByCategory(category.getSelectedItem().toString()));
         }
     }
 
@@ -203,11 +203,11 @@ public class CookBookUI extends JFrame {
             }
 
             manager.addNewRecipe(recipe);
-            displayTable();
+            displayTable(manager.selectByCategory(category.getSelectedItem().toString()));
         }
     }
 
-    private class UpdateActionHandler implements ActionListener {
+    private class UpdateRecipeMenuItemHandler implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -217,14 +217,30 @@ public class CookBookUI extends JFrame {
                         "Selection", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-
-            UpdateRecipeDialog dialog = new UpdateRecipeDialog(thisFrame);
+            Recipe recipe = manager.getRecipeByName(resultTable.getValueAt(selectedRow, 1).toString());
+            UpdateRecipeDialog dialog = new UpdateRecipeDialog(thisFrame, recipe);
             dialog.setVisible(true);
 
             if (!dialog.getOk()) {
                 return;
             }
 
+            recipe.setName(dialog.getRecipeName());
+            recipe.setDescription(dialog.getDescr());
+            recipe.setCategory(new Category(dialog.getCategory()));
+
+            recipe.getIngridients().clear();
+            for (String x : dialog.getIngr()) {
+                String[] y = x.split(" ");
+                recipe.addIngridient(new Ingredient(y[0], y[1], y[2]));
+            }
+
+            recipe.getAdvices().clear();
+            for (String x : dialog.getAdv()) {
+                recipe.addAdvice(new Advice(x));
+            }
+
+            displayTable(manager.selectByCategory(category.getSelectedItem().toString()));
         }
     }
 
@@ -256,14 +272,14 @@ public class CookBookUI extends JFrame {
 
             StringBuilder str = new StringBuilder();
             str.append("<html>"
-                    + "<h3>NAME:</h3>"
+                    + "<h3><font color=\"blue\">NAME:</font></h3>"
                     + "<font color=\"red\" size=\"5\" face=\"Comic Sans MS\">"
-                    + recipe.getName() + "</font><p>"
-                    + "<h3>DESCRIPTION:</h3>"
-                    + "<font size=\"4\" face=\"Comic Sans MS\">"
+                    + recipe.getName().toUpperCase() + "</font><p>"
+                    + "<h3><font color=\"blue\">DESCRIPTION:</font></h3>"
+                    + "<font size=\"4\" >"
                     + recipe.getDescription() + "</font>"
-                    + "<h3>INGREDIENTS:</h3>"
-                    + "<font size=\"4\" face=\"Comic Sans MS\">");
+                    + "<h3><font color=\"blue\">INGREDIENTS:</font></h3>"
+                    + "<font size=\"4\" >");
 
             for (Ingredient ingr : recipe.getIngridients()) {
                 str.append(ingr.getName() + " " + ingr.getQuantity() + ""
@@ -271,11 +287,11 @@ public class CookBookUI extends JFrame {
             }
 
             str.append("</font>"
-                    + "<h3>CATEGORY:</h3>"
-                    + "<font size=\"4\" face=\"Comic Sans MS\">"
+                    + "<h3><font color=\"blue\">CATEGORY:</font></h3>"
+                    + "<font size=\"4\" >"
                     + recipe.getCategory().getName() + "</font>"
-                    + "<h3>ADVICES:</h3>"
-                    + "<font size=\"4\" face=\"Comic Sans MS\">");
+                    + "<h3><font color=\"blue\">ADVICES:</font></h3>"
+                    + "<font size=\"4\" >");
 
             for (Advice adv : recipe.getAdvices()) {
                 str.append(adv.getDescription() + "<p>");

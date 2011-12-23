@@ -51,12 +51,11 @@ public class AddRecipeDialog extends JDialog {
         JScrollPane ingrScroll = new JScrollPane(ingr);
         JScrollPane advScroll = new JScrollPane(adv);
 
-        List<String> cat = new ArrayList<String>();
-        
+        List<String> cat = new ArrayList<String>();        
         for (Category x : manager.getAllCategory()) {
             cat.add(x.getName());
         }
-
+        
         category = new JComboBox(cat.toArray());
 
         okButton = new JButton("Ok");
