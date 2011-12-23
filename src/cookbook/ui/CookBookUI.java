@@ -31,6 +31,7 @@ public class CookBookUI extends JFrame {
     private JFrame thisFrame;
     private CookBookManager manager;
     private JMenu recipeMenu;
+    private JMenu searchMenu;
 
     public CookBookUI() {
         thisFrame = this;
@@ -63,6 +64,12 @@ public class CookBookUI extends JFrame {
         JMenuItem updateRecipeMenuItem = new JMenuItem("Update recipe");
 //        addIncidentMenuItem.addActionListener(new AddIncidentMenuItemHandler());
         recipeMenu.add(updateRecipeMenuItem);
+
+        searchMenu = new JMenu("Search");
+        menuBar.add(searchMenu);
+        JMenuItem searchByStr = new JMenuItem("Search by name");
+        searchMenu.add(searchByStr);
+        searchByStr.addActionListener(new SearchByStrMenuItemHandler());
 
         JScrollPane scrollPaneTable = new JScrollPane(resultTable);
         scrollPaneTable.setPreferredSize(new Dimension(150, 500));
@@ -254,5 +261,14 @@ public class CookBookUI extends JFrame {
         @Override
         public void mouseReleased(MouseEvent e) {
         }
+    }
+
+    private class SearchByStrMenuItemHandler implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            
+        }
+
     }
 }
