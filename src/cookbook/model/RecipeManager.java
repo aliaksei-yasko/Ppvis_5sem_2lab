@@ -59,6 +59,28 @@ public class RecipeManager {
         return chosen;
     }
 
+    public List<Recipe> selectByStr(String name){
+        List<Recipe> list = new ArrayList<Recipe>();
+        for (Recipe current : recipes){
+            if (current.getName().indexOf(name) != -1) {
+                list.add(current);
+            }
+        }
+
+        return list;
+    }
+
+    public List<Recipe> selectByCategory(String name){
+        List<Recipe> list = new ArrayList<Recipe>();
+        for (Recipe current : recipes){
+            if (current.getCategory().getName().equals(name)) {
+                list.add(current);
+            }
+        }
+        
+        return list;
+    }
+
     public boolean deleteFromChoosen(String name) {
         if (this.getRecipeByName(name) != null) {
             this.getRecipeByName(name).setChoosen(false);
